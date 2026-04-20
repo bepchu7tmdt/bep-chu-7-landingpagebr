@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bếp Chú 7 - Ba Rọi Xào Mắm Ruốc</title>
+    <style>
+        :root {
+            --primary-color: #FF6600;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+        body { background-color: #FFF5EE; color: #333; overflow-x: hidden; }
+
+        /* 1. Countdown Bar */
+        .countdown-bar { background: #000; color: #fff; text-align: center; padding: 10px 0; font-weight: bold; position: sticky; top: 0; z-index: 1100; }
+        #timer { color: #FFCC00; margin-left: 10px; }
+
+        /* 2. Thanh Menu Danh Mục Màu Cam */
+        header { 
+            background: var(--primary-color); 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            position: sticky; top: 40px; z-index: 1000;
+        }
+        .logo-box img { height: 45px; width: auto; filter: brightness(0) invert(1); }
+        
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
+
+        /* 3. Hero Section với Video Background */
+        .hero {
+            position: relative;
+            height: 480px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        .hero-video {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            object-fit: cover;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        .hero-content { position: relative; z-index: 2; text-align: center; padding: 20px; }
+        .hero h1 { font-size: 2.8rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.7); margin-bottom: 10px; }
+
+        /* 4. Product Cards */
+        .product-container { display: flex; justify-content: center; gap: 30px; padding: 50px 5%; flex-wrap: wrap; }
+        .product-card { background: white; border-radius: 20px; width: 340px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); text-align: center; padding-bottom: 30px; }
+        .img-box { width: 100%; height: 280px; overflow: hidden; border-radius: 20px 20px 0 0; position: relative; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* HIỆU ỨNG TRÁNG GƯƠNG (GIỮ NGUYÊN CODE CŨ) */
+        .img-box::after {
+            content: ""; position: absolute; top: 0; left: -150%; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); transition: 0.8s;
+        }
+        /* Hiệu ứng kích hoạt khi rê chuột */
+        .product-card:hover .img-box::after { left: 150%; }
+
+        /* Hiển thị Giá cũ và Giá mới */
+        .price-box { margin: 15px 0; }
+        .old-price { color: #888; text-decoration: line-through; font-size: 1.1rem; display: block; margin-bottom: 5px; }
+        .new-price { color: var(--primary-color); font-size: 2.2rem; font-weight: bold; display: block; }
+
+        .btn-buy {
+            display: inline-block; background: var(--primary-color); color: white; padding: 14px 55px;
+            border-radius: 35px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s;
+        }
+        .btn-buy:hover { transform: scale(1.05); background: #e65c00; box-shadow: 0 5px 15px rgba(255,102,0,0.3); }
+
+        /* 5. PHẦN FOOTER CŨ (Khôi phục lại như hình ảnh bạn gửi) */
+        .certification-footer { 
+            background: #0f172a; 
+            padding: 60px 5%; 
+            text-align: center;
+            color: white;
+        }
+        .cert-title { 
+            font-size: 0.8rem; 
+            letter-spacing: 3px; 
+            color: #94a3b8; 
+            text-transform: uppercase; 
+            margin-bottom: 30px; 
+        }
+        .cert-banner-container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        .cert-banner-container img { width: 100%; display: block; }
+        .footer-bottom-name { 
+            margin-top: 40px; 
+            font-weight: bold; 
+            color: var(--primary-color); 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+        }
+
+        /* 6. Popup */
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:9999; }
+        .popup { background:white; padding:40px; border-radius:25px; text-align:center; max-width:380px; border: 6px solid var(--primary-color); position: relative; }
+
+        @media (max-width: 768px) { header { flex-direction: column; height: auto; padding: 15px; } nav ul { gap: 10px; margin-top: 10px; } .hero h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+
+<div class="countdown-bar">⚡ ƯU ĐÃI CHỈ CÒN: <span id="timer">15:00</span></div>
+
+<header>
+    <div class="logo-box">
+        <img src="C:\Users\NGỌC NHƯ\Downloads\LOGOO .png"Bếp Chú 7">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Trang chủ</a></li>
+            <li><a href="#">Sản phẩm</a></li>
+            <li><a href="#">Liên hệ</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <video autoplay muted loop playsinline class="hero-video">
+        <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>BA RỌI XÀO MẰM RUỐC ĐẶC BIỆT</h1>
+        <p>Giao hàng toàn quốc - Kiểm tra hàng trước khi thanh toán</p>
+    </div>
+</section>
+
+<div class="product-container">
+    <div class="product-card">
+        <div class="img-box"><img src="C:\bảoi\hình ảnh\ba-roi.png" alt="Ba rọi 300g"></div>
+        <h3 style="margin-top:20px;">Ba Rọi Xay Xào Mắm Ruốc 300G</h3>
+        <div class="price-box">
+            <span class="old-price">135.000đ</span>
+            <span class="new-price">95.000đ</span>
+        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlbjtRhr-jChoqPSql0jsm-JZ7bky6ZlRQHYVJbx-pzkarQA/viewform?usp=publish-editor" class="btn-buy">MUA NGAY</a>
+    </div>
+
+    <div class="product-card">
+        <div class="img-box"><img src="C:\bảoi\hình ảnh\ba-roi-500g.jpg" alt="Ba rọi 500g"></div>
+        <h3 style="margin-top:20px;">Ba Rọi Xay Xào Mắm Ruốc 500G</h3>
+        <div class="price-box">
+            <span class="old-price">195.000đ</span>
+            <span class="new-price">125.000đ</span>
+        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlbjtRhr-jChoqPSql0jsm-JZ7bky6ZlRQHYVJbx-pzkarQA/viewform?usp=publish-editor" class="btn-buy">MUA NGAY</a>
+    </div>
+</div>
+
+<section class="certification-footer">
+    <div class="cert-title">CAM KẾT CHẤT LƯỢNG & CHỨNG NHẬN</div>
+    <div class="cert-banner-container">
+        <img src="C:\bảoi\hình ảnh\ẢNH BÌA WEB CÁC CHỨNG NHẬN.png"Chứng nhận Bếp Chú 7">
+    </div>
+    <div class="footer-bottom-name">BẾP CHÚ 7</div>
+</section>
+
+<div class="overlay" id="voucherOverlay">
+    <div class="popup">
+        <h2 style="color: var(--primary-color)">QUÀ TẶNG BẠN!</h2>
+        <div style="background: #FFF0E0; border: 2px dashed #FF6600; padding: 15px; margin: 20px 0; font-size: 1.5rem; font-weight: bold; color: #FF6600;">VOUCHER 40K</div>
+        <button class="btn-buy" onclick="document.getElementById('voucherOverlay').style.display='none'">NHẬN NGAY</button>
+    </div>
+</div>
+
+<script>
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            display.textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+            if (--timer < 0) timer = duration;
+        }, 1000);
+    }
+    window.onload = function () {
+        startTimer(60 * 15, document.querySelector('#timer'));
+        setTimeout(() => { document.getElementById('voucherOverlay').style.display = 'flex'; }, 3000);
+    };
+</script>
+
+</body>
+</html>
