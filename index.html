@@ -4,208 +4,547 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bếp Chú 7 - Ba Rọi Xào Mắm Ruốc</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
     <style>
         :root {
-            --primary-color: #FF6600;
-            --white: #ffffff;
+            --primary-red: #d0011b;
+            --sale-orange: #ff7337;
+            --bg-light: #f5f5f5;
+            --navy-blue: #001f3f;
+            --green-trust: #4caf50;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
-        body { background-color: #FFF5EE; color: #333; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Lexend', sans-serif; background-color: var(--bg-light); overflow-x: hidden; }
+        .app-container { max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
 
-        /* 1. Countdown Bar */
-        .countdown-bar { background: #000; color: #fff; text-align: center; padding: 10px 0; font-weight: bold; position: sticky; top: 0; z-index: 1100; }
-        #timer { color: #FFCC00; margin-left: 10px; }
+        /* TOP BAR - IMAGE GALLERY */
+        .gallery-section { width: 100%; background: #000; overflow: hidden; }
+        .swiper-main { width: 100%; aspect-ratio: 1/1; }
+        .swiper-main .swiper-slide { overflow: hidden; position: relative; }
+        .swiper-main img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .swiper-main .swiper-slide-active img { transform: scale(1.05); }
 
-        /* 2. Thanh Menu Danh Mục Màu Cam */
-        header { 
-            background: var(--primary-color); 
-            padding: 10px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            position: sticky; top: 40px; z-index: 1000;
+        .swiper-main .swiper-slide::after {
+            content: ""; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
         }
-        .logo-box img { height: 45px; width: auto; filter: brightness(0) invert(1); }
+        .swiper-main .swiper-slide-active::after { animation: shine 1.5s ease-in-out; }
+        @keyframes shine { 100% { left: 150%; } }
+
+        .swiper-thumbs { padding: 10px; background: #fff; }
+        .swiper-thumbs .swiper-slide { opacity: 0.4; cursor: pointer; border-radius: 4px; overflow: hidden; aspect-ratio: 1/1; }
+        .swiper-thumbs .swiper-slide-thumb-active { opacity: 1; border: 2px solid var(--primary-red); }
+        .swiper-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* FLASH SALE */
+        .flash-sale-bar { background: linear-gradient(90deg, var(--sale-orange), #ff4d00); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .price-box .current-price { font-size: 24px; font-weight: 700; }
+        .price-box .old-price { font-size: 14px; text-decoration: line-through; opacity: 0.8; margin-left: 5px; }
+        .countdown-box { text-align: right; }
+        .flash-title { display: flex; align-items: center; justify-content: flex-end; gap: 5px; font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+        .fa-bolt { color: #fffb00; animation: blink 0.6s infinite alternate; }
+        @keyframes blink { from { opacity: 1; transform: scale(1.2); } to { opacity: 0.4; transform: scale(0.9); } }
+        #timer { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+
+        /* PRODUCT INFO */
+        .product-header { padding: 15px; }
+        .product-title { font-size: 18px; font-weight: 700; color: #000; margin-bottom: 10px; text-transform: uppercase; line-height: 1.4; }
+        .rating-sold { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 15px; }
+        .stars { color: #ffbc00; }
+        .top-badge { background: #fff9e6; color: #d4a017; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+        .tags { display: flex; gap: 10px; margin-top: 15px; }
+        .tag-item { background: #f0fdf4; color: #166534; padding: 5px 10px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 5px; border: 1px solid #bbf7d0; }
+
+        .btn-pulse { animation: pulse-animation 2s infinite; }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 115, 55, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 4px 25px rgba(255, 115, 55, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 115, 55, 0.4); }
+        }
+
+        /* MÔ TẢ SẢN PHẨM & VIDEO */
+        .content-section { padding: 15px; border-top: 8px solid #f5f5f5; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; border-left: 4px solid var(--primary-red); padding-left: 10px; color: #333; }
+        .video-vertical-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        .video-item { width: 100%; border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 16/9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .video-item video { width: 100%; height: 100%; object-fit: cover; }
         
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav ul li a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
+        .desc-text h2 { font-size: 20px; color: #333; margin-bottom: 10px; line-height: 1.3; font-weight: 700; }
+        .desc-text p { font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+        .desc-sub-title { 
+            font-size: 15px; font-weight: 700; color: #444; 
+            margin: 20px 0 10px; border-left: 4px solid var(--sale-orange); 
+            padding-left: 10px; display: flex; align-items: center; gap: 8px;
+        }
+        .desc-list { list-style: none; padding-left: 5px; margin-bottom: 15px; }
+        .desc-list li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; color: #444; position: relative; padding-left: 15px; }
+        .desc-list li::before { content: "•"; position: absolute; left: 0; color: #ff7337; font-weight: bold; }
+        .desc-list li strong { color: #222; }
 
-        /* 3. Hero Section với Video Background */
-        .hero {
-            position: relative;
-            height: 480px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            overflow: hidden;
-        }
-        .hero-video {
-            position: absolute;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            object-fit: cover;
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-        .hero-content { position: relative; z-index: 2; text-align: center; padding: 20px; }
-        .hero h1 { font-size: 2.8rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.7); margin-bottom: 10px; }
+        /* ĐÁNH GIÁ THỰC TẾ */
+        .reviews-section { padding: 15px; border-top: 8px solid #f5f5f5; }
+        .review-card { background: #fff; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .review-user { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .avatar i { font-size: 20px; color: #ccc; }
+        .user-meta { display: flex; flex-direction: column; }
+        .user-name { font-size: 14px; font-weight: 700; color: #333; }
+        .review-stars { font-size: 10px; color: #ffbc00; }
+        .review-content { font-size: 14px; color: #555; line-height: 1.5; margin-bottom: 10px; }
+        .review-imgs { display: flex; gap: 5px; }
+        .review-imgs img { width: 80px; height: 80px; border-radius: 4px; object-fit: cover; }
 
-        /* 4. Product Cards */
-        .product-container { display: flex; justify-content: center; gap: 30px; padding: 50px 5%; flex-wrap: wrap; }
-        .product-card { background: white; border-radius: 20px; width: 340px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); text-align: center; padding-bottom: 30px; }
-        .img-box { width: 100%; height: 280px; overflow: hidden; border-radius: 20px 20px 0 0; position: relative; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* HIỆU ỨNG TRÁNG GƯƠNG (GIỮ NGUYÊN CODE CŨ) */
-        .img-box::after {
-            content: ""; position: absolute; top: 0; left: -150%; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg); transition: 0.8s;
-        }
-        /* Hiệu ứng kích hoạt khi rê chuột */
-        .product-card:hover .img-box::after { left: 150%; }
+        /* CHÍNH SÁCH BÁN HÀNG */
+        .policy-section { padding: 20px 15px; background: #fff; border-top: 8px solid #f5f5f5; }
+        .policy-item { text-align: center; padding: 15px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .policy-item i { font-size: 24px; color: var(--navy-blue); margin-bottom: 10px; }
+        .policy-item h4 { font-size: 13px; font-weight: 700; color: var(--navy-blue); margin-bottom: 5px; }
+        .policy-item p { font-size: 11px; color: #64748b; }
 
-        /* Hiển thị Giá cũ và Giá mới */
-        .price-box { margin: 15px 0; }
-        .old-price { color: #888; text-decoration: line-through; font-size: 1.1rem; display: block; margin-bottom: 5px; }
-        .new-price { color: var(--primary-color); font-size: 2.2rem; font-weight: bold; display: block; }
+        /* FOOTER */
+        .footer { background: var(--navy-blue); color: white; padding: 0 20px 120px; text-align: center; }
+        .footer-logo { font-size: 24px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
+        .footer-logo span { color: var(--sale-orange); }
+        .footer-info { font-size: 13px; opacity: 0.7; line-height: 1.8; margin-bottom: 20px; }
+        .social-links { display: flex; justify-content: center; gap: 15px; }
+        .social-links a { color: white; font-size: 20px; opacity: 0.8; }
 
-        .btn-buy {
-            display: inline-block; background: var(--primary-color); color: white; padding: 14px 55px;
-            border-radius: 35px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: 0.3s;
-        }
-        .btn-buy:hover { transform: scale(1.05); background: #e65c00; box-shadow: 0 5px 15px rgba(255,102,0,0.3); }
+        /* STICKY FOOTER */
+        .sticky-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: white; padding: 10px 15px; display: flex; gap: 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); z-index: 999; }
+        .btn-buy { flex: 1; background: var(--primary-red); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-buy:active { transform: scale(0.98); }
+        .btn-chat { width: 55px; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #128c7e; font-size: 24px; }
 
-        /* 5. PHẦN FOOTER CŨ (Khôi phục lại như hình ảnh bạn gửi) */
-        .certification-footer { 
-            background: #0f172a; 
-            padding: 60px 5%; 
-            text-align: center;
-            color: white;
+        /* POPUP CHỌN COMBO */
+        .popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;
         }
-        .cert-title { 
-            font-size: 0.8rem; 
-            letter-spacing: 3px; 
-            color: #94a3b8; 
-            text-transform: uppercase; 
-            margin-bottom: 30px; 
+        .popup-content {
+            background: white; width: 90%; max-width: 400px; border-radius: 15px; overflow: hidden;
+            animation: slideUp 0.3s ease; position: relative;
         }
-        .cert-banner-container { 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            border: 1px solid #334155;
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .popup-header { background: var(--navy-blue); color: white; padding: 15px; text-align: center; }
+        .close-popup { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: white; }
+        .order-form { padding: 20px; }
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
+        .input-group input {
+            width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #ddd;
+            border-radius: 8px; font-family: inherit; outline: none;
         }
-        .cert-banner-container img { width: 100%; display: block; }
-        .footer-bottom-name { 
-            margin-top: 40px; 
-            font-weight: bold; 
-            color: var(--primary-color); 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
+        .product-summary { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+        .btn-submit-order {
+            width: 100%; background: var(--primary-red); color: white; border: none;
+            padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer;
         }
-
-        /* 6. Popup */
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:none; justify-content:center; align-items:center; z-index:9999; }
-        .popup { background:white; padding:40px; border-radius:25px; text-align:center; max-width:380px; border: 6px solid var(--primary-color); position: relative; }
-
-        @media (max-width: 768px) { header { flex-direction: column; height: auto; padding: 15px; } nav ul { gap: 10px; margin-top: 10px; } .hero h1 { font-size: 2rem; } }
+        .btn-submit-order small { display: block; font-weight: 400; opacity: 0.8; font-size: 11px; margin-top: 5px; }
+        .success-box { text-align: center; padding: 40px 20px; }
+        .success-box i { font-size: 60px; color: var(--green-trust); margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="countdown-bar">⚡ ƯU ĐÃI CHỈ CÒN: <span id="timer">15:00</span></div>
-
-<header>
-    <div class="logo-box">
-        <img src="LOGOO .png"Bếp Chú 7">
-    </div>
-    <nav>
-        <ul>
-            <li><a href="#">Trang chủ</a></li>
-            <li><a href="#">Sản phẩm</a></li>
-            <li><a href="#">Liên hệ</a></li>
-        </ul>
-    </nav>
-</header>
-
-<section class="hero">
-    <video autoplay muted loop playsinline class="hero-video">
-        <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
-    </video>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-    <h1 style="color: #FF6600;">Ưu Đãi Đặc Biệt</h1>
-    <h1 style="color: #FF6600;">Ba Rọi Xào Mắm Ruốc</h1>
-    <p style="color: #FF6600;">Giao hàng toàn quốc - Kiểm tra hàng trước khi thanh toán</p>
-</div>
-</section>
-
-<div class="product-container">
-    <div class="product-card">
-        <div class="img-box"><img src="ba rọi thịt xay.png" alt="Ba rọi 300g"></div>
-        <h3 style="margin-top:20px;">Ba Rọi Xay Xào Mắm Ruốc 300G</h3>
-        <div class="price-box">
-            <span class="old-price">135.000đ</span>
-            <span class="new-price">95.000đ</span>
+<div class="app-container">
+    <section class="gallery-section">
+        <div class="swiper swiper-main">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="mamcalinh1.jpg" alt="Anh 1"></div>
+                <div class="swiper-slide"><img src="mamchungcalinh2.png" alt="Anh 2"></div>
+                <div class="swiper-slide"><img src="hinh3.jpg" alt="Anh 3"></div>
+                <div class="swiper-slide"><img src="mamcalinh4.png" alt="Anh 4"></div>
+            </div>
         </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlbjtRhr-jChoqPSql0jsm-JZ7bky6ZlRQHYVJbx-pzkarQA/viewform?usp=publish-editor" class="btn-buy">MUA NGAY</a>
-    </div>
-
-    <div class="product-card">
-        <div class="img-box"><img src="ba-roi-500g.jpg" alt="Ba rọi 500g"></div>
-        <h3 style="margin-top:20px;">Ba Rọi Xay Xào Mắm Ruốc 500G</h3>
-        <div class="price-box">
-            <span class="old-price">195.000đ</span>
-            <span class="new-price">155.000đ</span>
+        <div class="swiper swiper-thumbs">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="mamcalinh1.jpg"></div>
+                <div class="swiper-slide"><img src="mamchungcalinh2.png"></div>
+                <div class="swiper-slide"><img src="hinh3.jpg" alt="Anh 3"></div>
+                <div class="swiper-slide"><img src="mamcalinh4.png" alt="Anh 4"></div>
+            </div>
         </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdlbjtRhr-jChoqPSql0jsm-JZ7bky6ZlRQHYVJbx-pzkarQA/viewform?usp=publish-editor" class="btn-buy">MUA NGAY</a>
+    </section>
+
+    <div class="flash-sale-bar">
+        <div class="price-box">
+            <span class="current-price">125.000đ</span>
+            <span class="old-price">160.000đ</span>
+        </div>
+        <div class="countdown-box">
+            <div class="flash-title"><i class="fas fa-bolt"></i> FLASH SALE</div>
+            <div id="timer">02 : 44 : 55</div>
+        </div>
+    </div>
+
+    <section class="product-header">
+        <h1 class="product-title">Ba Rọi Xào Mắm Ruốc Thơm Ngon - Đậm Đà Vị Quê</h1>
+        <div class="rating-sold">
+            <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> <span style="color:#333; font-weight:600">4.9/5</span></div>
+            <div style="color: #888">| Đã bán 35.1K</div>
+        </div>
+        <div class="top-badge"><span>🏆 Sản phẩm hàng đầu</span><span>Đồ ăn chế biến sẵn & Đặc sản &gt;</span></div>
+        <div class="tags">
+            <div class="tag-item"><i class="fas fa-shield-alt"></i> Thanh toán an toàn</div>
+            <div class="tag-item"><i class="fas fa-truck"></i> Giao toàn quốc</div>
+        </div>
+
+        <div class="cta-hook-container" style="margin: 20px 0 5px;">
+            <button class="btn-pulse btn-open-popup" style="width: 100%; background: #ff7337; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(255, 115, 55, 0.4); text-transform: uppercase;">
+                <i class="fas fa-shopping-cart"></i> ĐẶT HÀNG NGAY NHẬN ƯU ĐÃI
+            </button>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h3 class="section-title">Mô tả sản phẩm</h3>
+        <div class="video-vertical-list">
+            <div class="video-item">
+                <iframe src="https://drive.google.com/file/d/11id89EbwzUeGcHoFm_Hdoq9b3SsHLBPP/preview?autoplay=1&mute=1" width="100%" height="100%" style="border: none;" allow="autoplay"></iframe>
+            </div>
+            <div class="video-item">
+                <video autoplay muted loop playsinline><source src="C:\Laditiktok\hinhanh\mamcalinh.mp4" type="video/mp4"></video>
+            </div>
+            <div class="video-item">
+                <video autoplay muted loop playsinline><source src="C:\Laditiktok\hinhanh\mamcaloc.mp4" type="video/mp4"></video>
+            </div>
+        </div>
+        <div class="desc-text">
+            <h2>Ba Rọi Xào Mắm Ruốc Bếp Chú 7 – Đậm Vị Quê Nhà, Đưa Cơm Cực Đã</h2>
+            <p>Có những món ăn chỉ cần nhắc tên đã thấy "thèm" cơm, và Ba Rọi Xào Mắm Ruốc chính là một món ăn như thế. Với công thức gia truyền kết hợp từ những nguyên liệu tươi ngon nhất, bepchu7.com mang đến cho bạn một món ăn mặn đậm đà, thơm nồng nàn mùi sả riềng, là cứu cánh hoàn hảo cho những bữa cơm bận rộn.</p>
+
+            <div class="desc-media" style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                <img src="G10thm.jpg" alt="Ba Rọi Xào Mắm Ruốc" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <div class="video-item">
+                    <video autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                        <source src="C:\Laditiktok\hinhanh\CLIP TRAO GIẢI THMQG 2026 BC7.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div id="desc-collapse-content" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; position: relative;">
+                <div class="desc-sub-title">✨ Điểm Đặc Biệt Của Ba Rọi Xào Mắm Ruốc Bếp Chú 7</div>
+                <ul class="desc-list">
+                    <li><strong>Tỷ lệ vàng nguyên liệu:</strong> Chúng tôi sử dụng đến 50% ba rọi heo tươi, phần thịt có sự cân bằng giữa nạc và mỡ, giúp món ăn vừa mềm, vừa béo mà không ngấy. Kết hợp cùng 20% mắm ruốc thượng hạng tạo nên độ mặn ngọt hài hòa.</li>
+                    <li><strong>Hương thơm đánh thức vị giác:</strong> Bí quyết nằm ở sự hòa quyện của sả tươi và riềng, được băm nhỏ và phi thơm vàng. Mùi sả riềng không chỉ khử mùi đặc trưng của mắm ruốc mà còn tạo nên một tầng hương vị cay nồng, ấm áp cực kỳ lôi cuốn.</li>
+                </ul>
+
+                <div class="desc-sub-title">💎 Thành Phần Chính (Cam Kết Sạch)</div>
+                <ul class="desc-list">
+                    <li><strong>Ba rọi heo tươi (50%):</strong> Thịt sạch, nguồn gốc rõ ràng, không sử dụng chất tạo nạc.</li>
+                    <li><strong>Mắm ruốc (20%):</strong> Loại mắm ruốc đặc sản vùng biển, thơm nồng, vị đậm đà nguyên bản.</li>
+                    <li><strong>Gia vị thảo mộc:</strong> Sả tươi, riềng củ, ớt hiểm hiểm.</li>
+                    <li><strong>Gia vị khác:</strong> Đường cát, dầu ăn, chất điều vị vừa đủ.</li>
+                </ul>
+
+                <div class="desc-sub-title">❄️ Bảo Quản & Sử Dụng</div>
+                <ul class="desc-list">
+                    <li><strong>Nhiệt độ phòng:</strong> Tránh ánh nắng trực tiếp, bảo quản được 1 tháng.</li>
+                    <li><strong>Cách dùng:</strong> Ăn kèm trực tiếp với cơm nóng, dưa leo, chuối chát hoặc rau sống.</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <button id="btn-desc-toggle" style="background: none; border: 1px solid var(--primary-red); padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; color: var(--primary-red); cursor: pointer;">
+                    Xem chi tiết sản phẩm <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="reviews-section">
+        <h3 class="section-title">Khách hàng nói gì?</h3>
+        <div id="review-container" style="max-height: 550px; overflow: hidden; position: relative; transition: max-height 0.5s ease;">
+            <div class="review-card">
+                <div class="review-user">
+                    <div class="avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <span class="user-name">Nguyễn Văn An</span>
+                        <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                </div>
+                <p class="review-content">Hàng tiệt trùng nên mình khá yên tâm khi đặt số lượng nhiều để dùng dần. Bảo quản tiện, khi cần chỉ việc lấy ra hâm nóng. Chất lượng ổn định, ăn lần nào cũng giống nhau.</p>
+                <div class="review-imgs">
+                    <img src="feedback.jpg" alt="fb1"><img src="feedback1.jpg" alt="fb2">
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-user">
+                    <div class="avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <span class="user-name">Trần Thị Hoa</span>
+                        <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                </div>
+                <p class="review-content">Mình ăn thử thấy vị khá giống đồ nhà làm, không bị quá mặn hay quá ngọt. Mắm chưng tơi, dễ ăn, ăn kèm rau sống rất hợp. Sẽ ủng hộ lâu dài.</p>
+                <div class="review-imgs">
+                    <img src="feedback2.jpg" alt="fb3"><img src="feedback3.jpg" alt="fb4">
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-user">
+                    <div class="avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <span class="user-name">Lê Minh Tâm</span>
+                        <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                </div>
+                <p class="review-content">Mình ở ngoài Bắc đặt thử lần đầu mà bất ngờ luôn. Hàng tiệt trùng giao xa nhưng mở ra vẫn thơm, vị mắm chưng đậm đà, trứng muối béo rất rõ. Ăn với cơm nóng đúng chuẩn “hao cơm”.</p>
+            </div>
+            <div id="review-overlay" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: linear-gradient(transparent, #fff); pointer-events: none; z-index: 2;"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <button id="btn-show-more" style="background: white; border: 1px solid #ddd; padding: 10px 25px; border-radius: 20px; font-size: 14px; font-weight: 600; color: #666; cursor: pointer;">
+                Xem thêm đánh giá <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>
+            </button>
+        </div>
+    </section>
+
+    <section class="policy-section">
+        <h3 class="section-title">Chính sách bán hàng</h3>
+        <div class="policy-grid" style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="policy-item" style="display: flex; align-items: center; text-align: left; gap: 15px; padding: 12px;">
+                <i class="fas fa-truck-fast" style="font-size: 20px; margin-bottom: 0;"></i>
+                <div><h4>Giao hàng tận nhà</h4><p>Giao hàng toàn quốc, nhanh chóng.</p></div>
+            </div>
+            <div class="policy-item" style="display: flex; align-items: center; text-align: left; gap: 15px; padding: 12px;">
+                <i class="fas fa-hand-holding-dollar" style="font-size: 20px; margin-bottom: 0;"></i>
+                <div><h4>Nhận hàng thanh toán</h4><p>Kiểm tra hàng thoải mái trước khi trả tiền.</p></div>
+            </div>
+            <div class="policy-item" style="display: flex; align-items: center; text-align: left; gap: 15px; padding: 12px;">
+                <i class="fas fa-check-circle" style="font-size: 20px; margin-bottom: 0;"></i>
+                <div><h4>Cam kết chất lượng</h4><p>Đổi trả 100% miễn phí nếu sản phẩm lỗi.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-banner" style="width: calc(100% + 40px); margin-left: -20px; margin-bottom: 30px; overflow: hidden;">
+            <img src="ẢNH BÌA WEB CÁC CHỨNG NHẬN.png" style="width: 100%; height: auto; display: block; object-fit: cover; border-bottom: 3px solid var(--sale-orange);">
+        </div>
+        <div class="footer-logo">BẾP CHÚ <span>7</span></div>
+        <p class="footer-info">
+            <strong>Mắm Ngon Hết Sảy</strong><br>
+            <i class="fas fa-map-marker-alt" style="margin-right: 5px; color: var(--sale-orange);"></i> Địa chỉ: 20/4b, Ấp Bắc Lân, Xã Bà Điểm, Tp. Hồ Chí Minh, Việt Nam<br>
+            <i class="fas fa-phone-alt" style="margin-right: 5px; color: var(--sale-orange);"></i> Hotline: 0909 195 185<br>
+            <i class="fas fa-envelope" style="margin-right: 5px; color: var(--sale-orange);"></i> Email: Bepchu7@gmail.com
+        </p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/profile.php?id=61577047173711" target="_blank" title="Facebook Bếp Chú 7"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.tiktok.com/@bepchu7_mamchungchachung" target="_blank" title="TikTok Bếp Chú 7"><i class="fab fa-tiktok"></i></a>
+            <a href="https://shopee.vn/shop/1521868544" target="_blank" title="Shopee Bếp Chú 7">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 24px; fill: currentColor; display: inline-block; vertical-align: middle;"><path d="M19.3 7.5h-2.1c-.5-2.8-2.6-5-5.2-5s-4.7 2.2-5.2 5H4.7c-1.1 0-2 .9-2 2v9.8c0 1.1.9 2 2 2h14.6c1.1 0 2-.9 2-2V9.5c0-1.1-.9-2-2-2zm-7.3-3.1c1.5 0 2.8 1.3 3.2 3.1h-6.4c.4-1.8 1.7-3.1 3.2-3.1zm4.4 10.1c-1.1 1.1-2.8 1.5-4.2 1.5-1.5 0-3.1-.4-4.2-1.5-.3-.3-.3-.7 0-1s.7-.3 1 0c.8.8 2.1 1.1 3.2 1.1 1.2 0 2.4-.3 3.2-1.1.3-.3.7-.3 1 0s.3.7 0 1z"/></svg>
+            </a>
+        </div>
+        <div style="margin-top: 20px; font-size: 11px; opacity: 0.5;">&copy; 2026 Bếp Chú 7.</div>
+    </footer>
+
+    <div class="sticky-footer">
+        <a href="https://zalo.me/0909195185" target="_blank" class="btn-chat"><i class="fab fa-whatsapp"></i></a>
+        <button class="btn-buy btn-open-popup">ĐẶT HÀNG NGAY</button>
+    </div>
+
+    <div id="orderPopup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>THÔNG TIN ĐẶT HÀNG</h3>
+                <span class="close-popup">&times;</span>
+            </div>
+            <form id="orderForm" class="order-form">
+                <div class="combo-selection" style="margin-bottom: 20px;">
+                    <p style="font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--navy-blue);">CHỌN COMBO ƯU ĐÃI:</p>
+                    
+                    <label class="combo-item" style="display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--sale-orange); border-radius: 8px; margin-bottom: 8px; cursor: pointer; background: #fffaf5;">
+                        <input type="radio" name="product_combo" value="1" data-price="140.000đ" checked style="width: 18px; height: 18px; accent-color: var(--primary-red);">
+                        <div style="flex: 1;">
+                            <span style="font-size: 14px; font-weight: 600;">Mua 1 sản phẩm</span>
+                            <div style="font-size: 11px; color: #22c55e; font-weight: 600;">Phí ship 15k</div>
+                        </div>
+                        <span style="font-weight: 700; color: var(--primary-red);">125.000đ</span>
+                    </label>
+
+                    <label class="combo-item" style="display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; background: white;">
+                        <input type="radio" name="product_combo" value="2" data-price="239.000đ" style="width: 18px; height: 18px; accent-color: var(--primary-red);">
+                        <div style="flex: 1;">
+                            <span style="font-size: 14px; font-weight: 600;">Combo 2 sản phẩm</span>
+                            <div style="font-size: 11px; color: #22c55e; font-weight: 600;">MIỄN PHÍ VẬN CHUYỂN</div>
+                        </div>
+                        <span style="font-weight: 700; color: var(--primary-red);">239.000đ</span>
+                    </label>
+
+                    <label class="combo-item" style="display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; background: white;">
+                        <input type="radio" name="product_combo" value="3" data-price="355.000đ" style="width: 18px; height: 18px; accent-color: var(--primary-red);">
+                        <div style="flex: 1;">
+                            <span style="font-size: 14px; font-weight: 600;">Combo 3 sản phẩm</span>
+                            <div style="font-size: 11px; color: #22c55e; font-weight: 600;">MIỄN PHÍ VẬN CHUYỂN</div>
+                        </div>
+                        <span style="font-weight: 700; color: var(--primary-red);">355.000đ</span>
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="name" placeholder="Họ và tên của bạn" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone-alt"></i>
+                    <input type="tel" name="phone" placeholder="Số điện thoại nhận hàng" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="address" placeholder="Địa chỉ nhận hàng chi tiết" required>
+                </div>
+
+                <div class="product-summary" style="background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="font-size: 13px;">Tổng thanh toán (gồm ship nếu có): <strong id="totalPriceDisplay" style="color:var(--primary-red); font-size: 16px;">140.000đ</strong></p>
+                </div>
+
+                <button type="submit" class="btn-submit-order" id="submitBtn">
+                    XÁC NHẬN ĐẶT HÀNG NGAY
+                    <small>Cảm ơn quý khách đã đặt hàng, Bếp Chú 7 sẽ liên hệ xác nhận trong ít phút!</small>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="successModal" class="popup-overlay">
+        <div class="popup-content success-box">
+            <i class="fas fa-check-circle"></i>
+            <h2>QUÝ KHÁCH ĐÃ ĐẶT HÀNG THÀNH CÔNG!</h2>
+            <p>Cảm ơn anh/chị đã tin dùng sản phẩm Bếp Chú 7.</p>
+            <button onclick="document.getElementById('successModal').style.display='none'" style="margin-top:20px; padding:10px 30px; border-radius:20px; border:1px solid #ddd; cursor:pointer;">ĐÓNG</button>
+        </div>
     </div>
 </div>
 
-<section class="certification-footer">
-    <div class="cert-title">CAM KẾT CHẤT LƯỢNG & CHỨNG NHẬN</div>
-    <div class="cert-banner-container">
-        <img src="ẢNH BÌA WEB CÁC CHỨNG NHẬN.png"Chứng nhận Bếp Chú 7">
-    </div>
-    <div class="footer-bottom-name">BẾP CHÚ 7</div>
-</section>
-
-<div class="overlay" id="voucherOverlay">
-    <div class="popup">
-        <h2 style="color: var(--primary-color)">QUÀ TẶNG BẠN!</h2>
-        <div style="background: #FFF0E0; border: 2px dashed #FF6600; padding: 15px; margin: 20px 0; font-size: 1.5rem; font-weight: bold; color: #FF6600;">VOUCHER 40K</div>
-        <button class="btn-buy" onclick="document.getElementById('voucherOverlay').style.display='none'">NHẬN NGAY</button>
-    </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    function startTimer(duration, display) {
-        var timer = duration, minutes, seconds;
-        setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-            display.textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
-            if (--timer < 0) timer = duration;
-        }, 1000);
+    // Xử lý thu gọn/mở rộng phần mô tả sản phẩm
+    document.getElementById('btn-desc-toggle').addEventListener('click', function() {
+        const content = document.getElementById('desc-collapse-content');
+        const isExpanded = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+
+        if (isExpanded) {
+            content.style.maxHeight = '0px';
+            this.innerHTML = 'Xem chi tiết sản phẩm <i class="fas fa-chevron-down"></i>';
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            this.innerHTML = 'Thu gọn nội dung <i class="fas fa-chevron-up"></i>';
+        }
+    });
+
+    // Cập nhật giá hiển thị khi khách chọn Combo
+    const comboInputs = document.querySelectorAll('input[name="product_combo"]');
+    const priceDisplay = document.getElementById('totalPriceDisplay');
+
+    comboInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            document.querySelectorAll('.combo-item').forEach(item => {
+                item.style.borderColor = '#ddd';
+                item.style.background = 'white';
+            });
+            
+            if(this.checked) {
+                priceDisplay.innerText = this.getAttribute('data-price');
+                this.parentElement.style.borderColor = 'var(--sale-orange)';
+                this.parentElement.style.background = '#fffaf5';
+            }
+        });
+    });
+
+    // Khởi tạo Swiper ảnh
+    var swiperThumbs = new Swiper(".swiper-thumbs", { spaceBetween: 8, slidesPerView: 4, freeMode: true, watchSlidesProgress: true });
+    var swiperMain = new Swiper(".swiper-main", { 
+        spaceBetween: 10, loop: true, 
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        thumbs: { swiper: swiperThumbs } 
+    });
+
+    // Countdown Timer Flash Sale
+    let totalSeconds = 9875;
+    function updateTimer() {
+        let h = Math.floor(totalSeconds / 3600);
+        let m = Math.floor((totalSeconds % 3600) / 60);
+        let s = totalSeconds % 60;
+        document.getElementById('timer').innerHTML = `${h.toString().padStart(2, '0')} : ${m.toString().padStart(2, '0')} : ${s.toString().padStart(2, '0')}`;
+        if(totalSeconds > 0) totalSeconds--;
     }
-    window.onload = function () {
-        startTimer(60 * 15, document.querySelector('#timer'));
-        setTimeout(() => { document.getElementById('voucherOverlay').style.display = 'flex'; }, 3000);
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // Xử lý nút Xem thêm đánh giá
+    document.getElementById('btn-show-more').addEventListener('click', function() {
+        const container = document.getElementById('review-container');
+        const overlay = document.getElementById('review-overlay');
+        if (container.style.maxHeight === '550px') {
+            container.style.maxHeight = '3000px';
+            overlay.style.display = 'none';
+            this.innerHTML = 'Thu gọn <i class="fas fa-chevron-up" style="margin-left: 5px;"></i>';
+        } else {
+            container.style.maxHeight = '550px';
+            overlay.style.display = 'block';
+            this.innerHTML = 'Xem thêm đánh giá <i class="fas fa-chevron-down" style="margin-left: 5px;"></i>';
+            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+
+    // Xử lý mở/đóng Popup Đặt hàng
+    const popup = document.getElementById('orderPopup');
+    const openBtns = document.querySelectorAll('.btn-open-popup');
+    const closeBtn = document.querySelector('.close-popup');
+
+    openBtns.forEach(btn => {
+        btn.onclick = () => popup.style.display = 'flex';
+    });
+
+    closeBtn.onclick = () => popup.style.display = 'none';
+    window.onclick = (e) => { if(e.target == popup) popup.style.display = 'none'; }
+
+    // Xử lý submit dữ liệu form về Google Sheets nhận đơn
+    document.getElementById('orderForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = "ĐANG GỬI ĐƠN HÀNG...";
+        submitBtn.disabled = true;
+
+        const formData = new FormData(this);
+        const selectedCombo = document.querySelector('input[name="product_combo"]:checked');
+        
+        const params = new URLSearchParams();
+        params.append('name', formData.get('name'));
+        params.append('phone', formData.get('phone'));
+        params.append('address', formData.get('address'));
+        params.append('product_combo', "Combo " + selectedCombo.value);
+        params.append('total_price', selectedCombo.getAttribute('data-price'));
+
+        fetch('https://script.google.com/macros/s/AKfycbwWWnaTnjVG_Vp0XGDYIMTBRogiBn6pH-3mpkk3TGg1i5BqQrXUbTedQ0DDEYYewHCxAg/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            body: params
+        })
+        .then(() => {
+            document.getElementById('orderPopup').style.display = 'none';
+            document.getElementById('successModal').style.display = 'flex';
+            this.reset();
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            alert("Có lỗi xảy ra khi gửi đơn hàng. Anh vui lòng liên hệ Hotline: 0909 195 185");
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+        });
     };
 </script>
-
 </body>
 </html>
